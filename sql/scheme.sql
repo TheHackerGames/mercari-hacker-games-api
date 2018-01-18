@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS `jobs` (
   `title`       VARCHAR(64)          NOT NULL,
   `description` TEXT                 NOT NULL,
   `salary`      INTEGER(32) unsigned NOT NULL,
-  `postcode`    CHAR(10)             NOT NULL,
+  `location`    VARCHAR(100)         NOT NULL,
   `created`     DATETIME             NOT NULL,
   PRIMARY KEY (`id`),
   FOREIGN KEY (`user_id`) REFERENCES users(id)

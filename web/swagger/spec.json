@@ -429,7 +429,7 @@
                 "salary": {
                     "type": "integer"
                 },
-                "postcode": {
+                "location": {
                     "type": "string"
                 }
             }

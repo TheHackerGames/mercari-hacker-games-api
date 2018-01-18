@@ -37,5 +37,5 @@ class Job
      * @SWG\Property()
      * @var string
      */
-    public $postcode;
+    public $location;
 }

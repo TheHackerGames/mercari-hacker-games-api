@@ -22,7 +22,7 @@ SELECT DISTINCT j.*
        INNER JOIN jobs_skills js
           ON j.id = js.job_id
          AND js.skill_id IN ($skillIdsStr)
- GROUP BY j.id, j.user_id, j.title, j.description, j.salary, j.postcode, j.created
+ GROUP BY j.id, j.user_id, j.title, j.description, j.salary, j.location, j.created
  ORDER BY COUNT(j.id) DESC, j.created DESC
  LIMIT ?
 OFFSET ?";
@@ -48,7 +48,7 @@ OFFSET ?";
                 ->setTitle($result['title'])
                 ->setDescription($result['description'])
                 ->setSalary($result['salary'])
-                ->setPostcode($result['postcode'])
+                ->setLocation($result['location'])
                 ->setCreated($created);
 
             $jobs[] = $job;

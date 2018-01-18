@@ -46,7 +46,7 @@ class Job
      * @ORM\Column(type="string")
      * @var string
      */
-    protected $postcode;
+    protected $location;
 
     /**
      * @ORM\Column(type="datetime")
@@ -89,9 +89,9 @@ class Job
         return $this;
     }
 
-    public function setPostcode(string $postcode)
+    public function setLocation(string $location)
     {
-        $this->postcode = $postcode;
+        $this->location = $location;
 
         return $this;
     }

@@ -124,7 +124,7 @@ class JobsController extends Controller
             !isset($decodedBody->title) ||
             !isset($decodedBody->description) ||
             !isset($decodedBody->salary) ||
-            !isset($decodedBody->postcode)
+            !isset($decodedBody->location)
         ) {
             throw new BadRequestHttpException('Parameters are missing');
         }
@@ -146,7 +146,7 @@ class JobsController extends Controller
             ->setTitle($decodedBody->title)
             ->setDescription($decodedBody->description)
             ->setSalary($decodedBody->salary)
-            ->setPostcode($decodedBody->postcode)
+            ->setLocation($decodedBody->location)
             ->setCreated(new \DateTime());
 
         $entityManager->persist($job);
