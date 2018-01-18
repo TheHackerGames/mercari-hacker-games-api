@@ -16,16 +16,4 @@ class JobSearch
      * @var array
      */
     public $skillIds;
-
-    /**
-     * @SWG\Property()
-     * @var integer
-     */
-    public $limit;
-
-    /**
-     * @SWG\Property()
-     * @var integer
-     */
-    public $offset;
 }
