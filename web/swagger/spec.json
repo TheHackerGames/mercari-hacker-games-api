@@ -5,6 +5,25 @@
         "version": "1.0.0"
     },
     "paths": {
+        "/mili": {
+            "get": {
+                "tags": [
+                    "Military"
+                ],
+                "summary": "Get list of militaries",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List returned"
+                    }
+                }
+            }
+        },
         "/": {
             "get": {
                 "tags": [
