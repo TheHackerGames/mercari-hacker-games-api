@@ -586,6 +586,12 @@
                 },
                 "description": {
                     "type": "string"
+                },
+                "salary": {
+                    "type": "integer"
+                },
+                "location": {
+                    "type": "string"
                 }
             }
         },
