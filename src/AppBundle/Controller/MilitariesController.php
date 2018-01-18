@@ -55,6 +55,81 @@ class MilitariesController extends Controller
     }
 
     /**
+     * @SWG\Get(
+     *   path="/militaries/{military_id}/skills",
+     *   summary="List of military skill",
+     *   tags={"Military"},
+     *   consumes={"application/json"},
+     *   produces={"application/json"},
+     *   @SWG\Parameter(
+     *     description="military_id to fetch skills for",
+     *     in="path",
+     *     name="military_id",
+     *     required=true,
+     *     type="integer"
+     *   ),
+     *   @SWG\Parameter(
+     *     name="limit",
+     *     in="query",
+     *     description="Number of rows to fetch",
+     *     required=false,
+     *     type="integer"
+     *   ),
+     *   @SWG\Parameter(
+     *     name="offset",
+     *     in="query",
+     *     description="Number of rows to skip",
+     *     required=false,
+     *     type="integer"
+     *   ),
+     *   @SWG\Response(
+     *     response="200",
+     *     description="Skill created/matched"
+     *   ),
+     *   @SWG\Response(
+     *     response="400",
+     *     description="Invalid request"
+     *   )
+     * )
+     * @Route("/militaries/{military_id}/skills", name="get_military_skills")
+     * @Method({"Get"})
+     */
+    public function getMilitarySkillsAction(Request $request)
+    {
+        $militaryId = $request->get('military_id');
+        $limit = $request->get('limit', 50);
+        $offset = $request->get('offset', 0);
+
+        $entityManager = $this->get('doctrine.orm.entity_manager');
+        $militaryRepository = $entityManager->getRepository(Military::class);
+        assert($entityManager instanceof EntityManager);
+        assert($militaryRepository instanceof EntityRepository);
+
+        $militaryEntity = $militaryRepository->find($militaryId);
+        if (!($militaryEntity instanceof Military)) {
+            throw new InvalidArgumentException('Military id is invalid');
+        }
+
+        $skillRepository = $this->get('doctrine.orm.entity_manager')
+            ->getRepository(Skill::class);
+        assert($skillRepository instanceof EntityRepository);
+
+        $skills = $skillRepository->findByMilitaryId($militaryId, $limit, $offset);
+
+        $serializer = $this->container->get('jms_serializer');
+
+        $data = [
+            'skills' => $skills
+        ];
+        $content = $serializer->serialize($data, 'json');
+
+        $jsonResponse = new JsonResponse();
+        $jsonResponse->setContent($content);
+
+        return $jsonResponse;
+    }
+
+    /**
      * @SWG\Post(
      *   path="/militaries/{military_id}/skills",
      *   summary="Add a military skill",

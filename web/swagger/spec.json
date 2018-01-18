@@ -58,6 +58,49 @@
             }
         },
         "/militaries/{military_id}/skills": {
+            "get": {
+                "tags": [
+                    "Military"
+                ],
+                "summary": "List of military skill",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "military_id",
+                        "in": "path",
+                        "description": "military_id to fetch skills for",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Number of rows to fetch",
+                        "required": false,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "Number of rows to skip",
+                        "required": false,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Skill created/matched"
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                }
+            },
             "post": {
                 "tags": [
                     "Military"
