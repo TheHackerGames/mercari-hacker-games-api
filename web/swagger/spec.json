@@ -191,6 +191,44 @@
                         "description": "User not found"
                     }
                 }
+            },
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Update a user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "description": "user_id to update",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "description": "User",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Update user entity"
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                }
             }
         },
         "/users": {
