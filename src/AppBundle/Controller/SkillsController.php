@@ -11,11 +11,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class SkillsController extends Controller
 {
-    public function getMilitarySkillsAction(Request $request)
-    {
-
-    }
-
     public function getUserSkillsAction(Request $request)
     {
 
