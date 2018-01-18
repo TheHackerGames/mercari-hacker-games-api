@@ -162,6 +162,17 @@
                 "produces": [
                     "application/json"
                 ],
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "description": "User",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    }
+                ],
                 "responses": {
                     "201": {
                         "description": "New user created"
@@ -296,6 +307,19 @@
             "properties": {
                 "name": {
                     "type": "string"
+                }
+            }
+        },
+        "User": {
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "rank": {
+                    "type": "string"
+                },
+                "military_id": {
+                    "type": "integer"
                 }
             }
         }
