@@ -2,6 +2,8 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Military;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -28,6 +30,20 @@ class MilitariesController extends Controller
      */
     public function listAction(Request $request)
     {
+        $militariesRepository = $this->get('doctrine.orm.entity_manager')
+            ->getRepository(Military::class);
 
+        assert($militariesRepository instanceof EntityRepository);
+        $militaries = $militariesRepository->findAll();
+
+        $data = ['militaries' => $militaries];
+
+        $serializer = $this->container->get('jms_serializer');
+        $content = $serializer->serialize($data, 'json');
+
+        $jsonResponse = new JsonResponse();
+        $jsonResponse->setContent($content);
+
+        return $jsonResponse;
     }
 }
