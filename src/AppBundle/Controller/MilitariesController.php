@@ -36,8 +36,13 @@ class MilitariesController extends Controller
         assert($militariesRepository instanceof EntityRepository);
         $militaries = $militariesRepository->findAll();
 
+        $data = ['militaries' => $militaries];
+
+        $serializer = $this->container->get('jms_serializer');
+        $content = $serializer->serialize($data, 'json');
+
         $jsonResponse = new JsonResponse();
-        $jsonResponse->setData(['militaries' => $militaries]);
+        $jsonResponse->setContent($content);
 
         return $jsonResponse;
     }
