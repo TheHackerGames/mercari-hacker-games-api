@@ -3,8 +3,11 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Job;
+use AppBundle\Entity\JobSkill;
+use AppBundle\Entity\Skill;
 use AppBundle\Entity\User;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -30,6 +33,20 @@ class JobsController extends Controller
      *     required=true,
      *     @SWG\Schema(ref="#/definitions/JobSearch"),
      *   ),
+     *   @SWG\Parameter(
+     *     name="limit",
+     *     in="query",
+     *     description="Number of rows to fetch",
+     *     required=false,
+     *     type="integer"
+     *   ),
+     *   @SWG\Parameter(
+     *     name="offset",
+     *     in="query",
+     *     description="Number of rows to skip",
+     *     required=false,
+     *     type="integer"
+     *   ),
      *   @SWG\Response(
      *     response="200",
      *     description="List returned"
@@ -39,18 +56,34 @@ class JobsController extends Controller
      *     description="Bad request"
      *   )
      * )
-     * @Route("/jobs-search", name="jobs")
-     * @Method({"POST"})
+     * @Route("/jobs-search", name="search-jobs")
+     * @Method({"Post"})
      */
     public function searchJobsAction(Request $request)
     {
+        $limit = $request->get('limit', 50);
+        $offset = $request->get('offset', 0);
+
         $body = $request->getContent();
         $decodedBody = json_decode($body);
 
-        $jobs = [];
+        if (!isset($decodedBody->skillIds)) {
+            throw new BadRequestHttpException('Parameters are missing');
+        }
+
+        $jobRepository = $this->get('doctrine.orm.entity_manager')
+            ->getRepository(Job::class);
+        assert($jobRepository instanceof EntityRepository);
+
+        $jobs = $jobRepository->findBySkillIds($decodedBody->skillIds, $limit, $offset);
+
+        $data = ['jobs' => $jobs];
+
+        $serializer = $this->container->get('jms_serializer');
+        $content = $serializer->serialize($data, 'json');
 
         $jsonResponse = new JsonResponse();
-        $jsonResponse->setData(['jobs' => $jobs]);
+        $jsonResponse->setContent($content);
 
         return $jsonResponse;
     }

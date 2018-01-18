@@ -26,6 +26,20 @@
                         "schema": {
                             "$ref": "#/definitions/JobSearch"
                         }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Number of rows to fetch",
+                        "required": false,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "Number of rows to skip",
+                        "required": false,
+                        "type": "integer"
                     }
                 ],
                 "responses": {
@@ -383,12 +397,6 @@
                     "items": {
                         "type": "integer"
                     }
-                },
-                "limit": {
-                    "type": "integer"
-                },
-                "offset": {
-                    "type": "integer"
                 }
             }
         },
