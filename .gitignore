@@ -49,5 +49,9 @@
 
 # Operating system junk
 .DS_Store
+
 # IntelliJ/Storm
 .idea/
+
+# Docker data
+mysql-data/*

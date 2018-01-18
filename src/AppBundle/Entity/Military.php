@@ -15,17 +15,17 @@ class Military
      * @ORM\Id
      * @var int
      */
-    private $id;
+    protected $id;
 
     /**
      * @ORM\Column(type="string", length=32)
      * @var string
      */
-    private $name;
+    protected $name;
 
     /**
      * @ORM\Column(type="datetime")
      * @var \DateTime
      */
-    private $created;
+    protected $created;
 }
