@@ -57,6 +57,46 @@
                 }
             }
         },
+        "/militaries/{military_id}/skills": {
+            "post": {
+                "tags": [
+                    "Military"
+                ],
+                "summary": "Add a military skill",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "military_id",
+                        "in": "path",
+                        "description": "military_id to add the skill to",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "description": "MilitarySkill",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/MilitarySkill"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Skill created/matched"
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                }
+            }
+        },
         "/": {
             "get": {
                 "tags": [
@@ -260,6 +300,13 @@
                 },
                 "offset": {
                     "type": "integer"
+                }
+            }
+        },
+        "MilitarySkill": {
+            "properties": {
+                "name": {
+                    "type": "string"
                 }
             }
         },

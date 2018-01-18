@@ -28,4 +28,14 @@ class Military
      * @var \DateTime
      */
     protected $created;
+
+    /**
+     * Get military id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 }

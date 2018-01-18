@@ -16,11 +16,6 @@ class SkillsController extends Controller
 
     }
 
-    public function addMilitarySkillsAction(Request $request)
-    {
-
-    }
-
     public function getUserSkillsAction(Request $request)
     {
 
