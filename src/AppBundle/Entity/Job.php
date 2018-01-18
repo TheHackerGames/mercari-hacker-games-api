@@ -37,6 +37,18 @@ class Job
     protected $description;
 
     /**
+     * @ORM\Column(type="integer")
+     * @var int
+     */
+    protected $salary;
+
+    /**
+     * @ORM\Column(type="string")
+     * @var string
+     */
+    protected $postcode;
+
+    /**
      * @ORM\Column(type="datetime")
      * @var \DateTime
      */
@@ -66,6 +78,20 @@ class Job
     public function setDescription(string $description)
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function setSalary(int $salary)
+    {
+        $this->salary = $salary;
+
+        return $this;
+    }
+
+    public function setPostcode(string $postcode)
+    {
+        $this->postcode = $postcode;
 
         return $this;
     }

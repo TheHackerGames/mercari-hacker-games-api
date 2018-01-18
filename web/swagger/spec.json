@@ -425,6 +425,12 @@
                 },
                 "description": {
                     "type": "string"
+                },
+                "salary": {
+                    "type": "integer"
+                },
+                "postcode": {
+                    "type": "string"
                 }
             }
         },

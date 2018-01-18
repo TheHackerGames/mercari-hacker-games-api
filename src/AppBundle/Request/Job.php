@@ -26,4 +26,16 @@ class Job
      * @var string
      */
     public $description;
+
+    /**
+     * @SWG\Property()
+     * @var int
+     */
+    public $salary;
+
+    /**
+     * @SWG\Property()
+     * @var string
+     */
+    public $postcode;
 }
