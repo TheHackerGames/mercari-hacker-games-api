@@ -38,6 +38,39 @@
                 }
             }
         },
+        "/jobs": {
+            "post": {
+                "tags": [
+                    "Jobs"
+                ],
+                "summary": "Post a new job",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "description": "Job",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Job"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "New job posted"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                }
+            }
+        },
         "/militaries": {
             "get": {
                 "tags": [
@@ -287,6 +320,19 @@
         }
     },
     "definitions": {
+        "Job": {
+            "properties": {
+                "user_id": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                }
+            }
+        },
         "JobSearch": {
             "properties": {
                 "skillIds": {

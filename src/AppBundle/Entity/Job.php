@@ -2,6 +2,8 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
+
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\Job")
  * @ORM\Table(name="jobs")
@@ -9,33 +11,62 @@ namespace AppBundle\Entity;
 class Job
 {
     /**
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      * @ORM\Column(type="integer", length=11)
      * @ORM\Id
      * @var int
      */
-    private $id;
+    protected $id;
 
     /**
      * @ORM\Column(type="integer", length=11)
      * @var int
      */
-    private $user_id;
+    protected $user_id;
 
     /**
      * @ORM\Column(type="string", length=64)
      * @var string
      */
-    private $title;
+    protected $title;
 
     /**
      * @ORM\Column(type="text")
      * @var string
      */
-    private $description;
+    protected $description;
 
     /**
      * @ORM\Column(type="datetime")
      * @var \DateTime
      */
-    private $created;
+    protected $created;
+
+    public function setUserId(int $userId)
+    {
+        $this->user_id = $userId;
+
+        return $this;
+    }
+
+    public function setTitle(string $title)
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    public function setDescription(string $description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function setCreated(\DateTime $created)
+    {
+        $this->created = $created;
+
+        return $this;
+    }
 }
