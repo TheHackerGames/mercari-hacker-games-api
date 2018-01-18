@@ -75,16 +75,15 @@ class Skill extends EntityRepository
 
         $sql = "SELECT s.*
         FROM skills s
-        INNER JOIN ranks r ON r.skill_id = s.id
-        LEFT JOIN users_skills us ON us.skill_id = ms.skill_id
-        WHERE ms.military_id = ?
+        INNER JOIN ranks_skills rs ON rs.skill_id = s.id
+        LEFT JOIN users_skills us ON us.skill_id = s.id
+        WHERE rs.rank_id = ?
         GROUP BY s.id
         ORDER BY COUNT(DISTINCT us.user_id) DESC, s.name
         LIMIT ?
         OFFSET ?";
 
-
-        $params = [$militaryId, $limit, $offset];
+        $params = [$rankId, $limit, $offset];
         $types = [
             \PDO::PARAM_INT,
             \PDO::PARAM_INT,

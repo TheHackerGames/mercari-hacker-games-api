@@ -50,6 +50,11 @@ class Rank
         return $this;
     }
 
+    public function getMilitaryId()
+    {
+        return $this->military_id;
+    }
+
     public function setMilitaryId(int $militaryId)
     {
         $this->military_id = $militaryId;

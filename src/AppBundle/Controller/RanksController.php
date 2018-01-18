@@ -2,8 +2,10 @@
 
 namespace AppBundle\Controller;
 
+use DateTime;
 use AppBundle\Entity\MilitarySkill;
 use AppBundle\Entity\Rank;
+use AppBundle\Entity\RankSkill;
 use AppBundle\Entity\Skill;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
@@ -79,7 +81,7 @@ class RanksController extends Controller
 
     /**
      * @SWG\Post(
-     *   path="/ranks/{rank_id}/skills",
+     *   path="/ranks/{rank_id}/skills/{skill_id}",
      *   summary="Add skill to a rank",
      *   tags={"Ranks"},
      *   consumes={"application/json"},
@@ -107,7 +109,7 @@ class RanksController extends Controller
      *     description="Bad request"
      *   )
      * )
-     * @Route("/ranks/{rank_id}/skills/{skill_id}}", name="add_rank_skill")
+     * @Route("/ranks/{rank_id}/skills/{skill_id}", name="add_rank_skill")
      * @Method({"POST"})
      */
     public function addRankSkillsAction(Request $request)
@@ -122,7 +124,7 @@ class RanksController extends Controller
             ->getRepository(Rank::class);
 
         $rank = $rankRepository->find($rankId);
-        if (!$rank) {
+        if (!($rank instanceof Rank)) {
             throw new BadRequestHttpException('Rank id is invalid');
         }
 
@@ -134,12 +136,35 @@ class RanksController extends Controller
             throw new BadRequestHttpException('Skill id is invalid');
         }
 
-        // Check if skill is linked to the same military as rank - Reject if not
         $militarySkillRepository = $entityManager
             ->getRepository(MilitarySkill::class);
-        //$militarySkillRepository->findBy(['military_id' => , 'skill_id' => $skillId])
+        $militarySkill = $militarySkillRepository->findOneBy([
+            'military_id' => $rank->getMilitaryId(),
+            'skill_id' => $skillId
+        ]);
 
+        if (!$militarySkill) {
+            throw new BadRequestHttpException('Skill is not connected to military ' . $rank->getMilitaryId());
+        }
 
+        $rankSkill = new RankSkill();
+        $rankSkill->setSkillId($skillId)
+            ->setRankId($rankId)
+            ->setCreated(new DateTime());
+
+        $entityManager->persist($rankSkill);
+        $entityManager->flush();
+
+        $data = [ 'rankSkill' => $rankSkill ];
+
+        $serializer = $this->container->get('jms_serializer');
+        $content = $serializer->serialize($data, 'json');
+
+        $jsonResponse = new JsonResponse();
+        $jsonResponse->setStatusCode(200);
+        $jsonResponse->setContent($content);
+
+        return $jsonResponse;
     }
 
     /**

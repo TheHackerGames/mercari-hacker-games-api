@@ -265,6 +265,44 @@
                 }
             }
         },
+        "/ranks/{rank_id}/skills/{skill_id}": {
+            "post": {
+                "tags": [
+                    "Ranks"
+                ],
+                "summary": "Add skill to a rank",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "rank_id",
+                        "in": "path",
+                        "description": "rank_id to add the skill for",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "skill_id",
+                        "in": "path",
+                        "description": "skill_id to add to the rank",
+                        "required": true,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List returned"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                }
+            }
+        },
         "/ranks/{rank_id}/skills": {
             "get": {
                 "tags": [
@@ -297,42 +335,6 @@
                         "in": "query",
                         "description": "Number of results to skip",
                         "required": false,
-                        "type": "integer"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "List returned"
-                    },
-                    "400": {
-                        "description": "Bad request"
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "Ranks"
-                ],
-                "summary": "Add skill to a rank",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "name": "rank_id",
-                        "in": "path",
-                        "description": "rank_id to add the skill for",
-                        "required": true,
-                        "type": "integer"
-                    },
-                    {
-                        "name": "skill_id",
-                        "in": "path",
-                        "description": "skill_id to add to the rank",
-                        "required": true,
                         "type": "integer"
                     }
                 ],
