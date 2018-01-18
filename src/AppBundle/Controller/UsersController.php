@@ -54,9 +54,7 @@ class UsersController extends Controller
         $user = $userRepository->find($request->get('user_id'));
 
         if (!$user) {
-            $jsonResponse = new JsonResponse();
-            $jsonResponse->setStatusCode(404);
-            return $jsonResponse;
+            throw new BadRequestHttpException('User id is invalid');
         }
 
         $data = ['user' => $user];
@@ -114,6 +112,86 @@ class UsersController extends Controller
             ->setRank($decodedBody->rank)
             ->setMilitaryId($decodedBody->military_id)
             ->setCreated(new \DateTime());
+
+        /** @var EntityManager $entityManager */
+        $entityManager = $this->get('doctrine.orm.entity_manager');
+        $entityManager->persist($user);
+
+        try {
+            $entityManager->flush();
+        } catch (ForeignKeyConstraintViolationException $e) {
+            throw new BadRequestHttpException('Invalid military id');
+        }
+
+        $data = ['user' => $user];
+
+        $serializer = $this->container->get('jms_serializer');
+        $content = $serializer->serialize($data, 'json');
+
+        $jsonResponse = new JsonResponse();
+        $jsonResponse->setContent($content);
+
+        return $jsonResponse;
+    }
+
+    /**
+     * @SWG\Post(
+     *   path="/users/{user_id}",
+     *   summary="Update a user",
+     *   tags={"User"},
+     *   consumes={"application/json"},
+     *   produces={"application/json"},
+     *   @SWG\Parameter(
+     *     description="user_id to update",
+     *     in="path",
+     *     name="user_id",
+     *     required=true,
+     *     type="integer"
+     *   ),
+     *   @SWG\Parameter(
+     *     name="body",
+     *     in="body",
+     *     description="User",
+     *     required=true,
+     *     @SWG\Schema(ref="#/definitions/User"),
+     *   ),
+     *   @SWG\Response(
+     *     response="200",
+     *     description="Update user entity"
+     *   ),
+     *   @swg\Response(
+     *     response="400",
+     *     description="Invalid request"
+     *   )
+     * )
+     * @Route("/users/{user_id}", name="update_user")
+     * @Method({"POST"})
+     */
+    public function updateAction(Request $request)
+    {
+        $userRepository = $this->get('doctrine.orm.entity_manager')
+            ->getRepository(User::class);
+        assert($userRepository instanceof EntityRepository);
+
+        $user = $userRepository->find($request->get('user_id'));
+        if (!$user) {
+            throw new BadRequestHttpException('User id is invalid');
+        }
+
+        $body = $request->getContent();
+        $decodedBody = json_decode($body);
+
+        if (
+            !isset($decodedBody->name) ||
+            !isset($decodedBody->rank) ||
+            !isset($decodedBody->military_id)
+        ) {
+            throw new BadRequestHttpException('Parameters are missing');
+        }
+
+        $user->setName($decodedBody->name)
+            ->setRank($decodedBody->rank)
+            ->setMilitaryId($decodedBody->military_id);
 
         /** @var EntityManager $entityManager */
         $entityManager = $this->get('doctrine.orm.entity_manager');
