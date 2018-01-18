@@ -20,6 +20,65 @@ class RanksController extends Controller
 {
     /**
      * @SWG\Post(
+     *   path="/ranks",
+     *   summary="Create a rank",
+     *   tags={"Ranks"},
+     *   consumes={"application/json"},
+     *   produces={"application/json"},
+     *   @SWG\Parameter(
+     *     name="body",
+     *     in="body",
+     *     description="Rank",
+     *     required=true,
+     *     @SWG\Schema(ref="#/definitions/Rank"),
+     *   ),
+     *   @SWG\Response(
+     *     response="201",
+     *     description="New rank created"
+     *   ),
+     *   @swg\Response(
+     *     response="400",
+     *     description="Invalid request"
+     *   )
+     * )
+     * @Route("/ranks", name="create_rank")
+     * @Method({"POST"})
+     */
+    public function addAction(Request $request)
+    {
+        $body = $request->getContent();
+        $decodedBody = json_decode($body);
+
+        if (
+            !isset($decodedBody->name) ||
+            !isset($decodedBody->military_id)
+        ) {
+            throw new BadRequestHttpException('Parameters are missing');
+        }
+
+        $rank = (new Rank())
+            ->setName($decodedBody->name)
+            ->setMilitaryId($decodedBody->military_id)
+            ->setCreated(new \DateTime());
+
+        $entityManager = $this->get('doctrine.orm.entity_manager');
+        assert($entityManager instanceof EntityManager);
+        $entityManager->persist($rank);
+        $entityManager->flush();
+
+        $data = ['rank' => $rank];
+
+        $serializer = $this->container->get('jms_serializer');
+        $content = $serializer->serialize($data, 'json');
+
+        $jsonResponse = new JsonResponse();
+        $jsonResponse->setContent($content);
+
+        return $jsonResponse;
+    }
+
+    /**
+     * @SWG\Post(
      *   path="/ranks/{rank_id}/skills",
      *   summary="Add skill to a rank",
      *   tags={"Ranks"},
@@ -78,7 +137,7 @@ class RanksController extends Controller
         // Check if skill is linked to the same military as rank - Reject if not
         $militarySkillRepository = $entityManager
             ->getRepository(MilitarySkill::class);
-        $militarySkillRepository->findBy(['military_id' => , 'skill_id' => $skillId])
+        //$militarySkillRepository->findBy(['military_id' => , 'skill_id' => $skillId])
 
 
     }

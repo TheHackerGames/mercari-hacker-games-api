@@ -25,10 +25,10 @@ class User
     protected $name;
 
     /**
-     * @ORM\Column(type="string", length=32)
-     * @var string
+     * @ORM\Column(type="integer", length=11)
+     * @var int
      */
-    protected $rank;
+    protected $rank_id;
 
     /**
      * @ORM\Column(type="integer", length=11)
@@ -54,9 +54,9 @@ class User
         return $this;
     }
 
-    public function setRank(string $rank)
+    public function setRankId(int $rank_id)
     {
-        $this->rank = $rank;
+        $this->rank_id = $rank_id;
 
         return $this;
     }

@@ -1,17 +1,27 @@
-CREATE TABLE IF NOT EXISTS  `militaries` (
+CREATE TABLE IF NOT EXISTS `militaries` (
   `id`      INTEGER(11) unsigned NOT NULL AUTO_INCREMENT,
   `name`    VARCHAR(32)          NOT NULL,
   `created` DATETIME             NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `users` (
+CREATE TABLE IF NOT EXISTS `ranks` (
   `id`          INTEGER(11) unsigned NOT NULL AUTO_INCREMENT,
   `name`        VARCHAR(32)          NOT NULL,
-  `rank`        VARCHAR(32)          NOT NULL,
   `military_id` INTEGER(11) unsigned NOT NULL,
   `created`     DATETIME             NOT NULL,
   PRIMARY KEY (`id`),
+  FOREIGN KEY (`military_id`) REFERENCES militaries(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `users` (
+  `id`          INTEGER(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name`        VARCHAR(32)          NOT NULL,
+  `rank_id`     INTEGER(11) unsigned NOT NULL,
+  `military_id` INTEGER(11) unsigned NOT NULL,
+  `created`     DATETIME             NOT NULL,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`rank_id`) REFERENCES ranks(id),
   FOREIGN KEY (`military_id`) REFERENCES militaries(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

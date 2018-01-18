@@ -25,6 +25,12 @@ class Rank
     protected $name;
 
     /**
+     * @ORM\Column(type="integer", length=11)
+     * @var int
+     */
+    protected $military_id;
+
+    /**
      * @ORM\Column(type="datetime")
      * @var \DateTime
      */
@@ -40,6 +46,13 @@ class Rank
     public function setName(string $name)
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function setMilitaryId(int $militaryId)
+    {
+        $this->military_id = $militaryId;
 
         return $this;
     }
