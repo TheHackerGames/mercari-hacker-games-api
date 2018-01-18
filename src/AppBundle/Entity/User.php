@@ -15,29 +15,29 @@ class User
      * @ORM\Id
      * @var int
      */
-    private $id;
+    protected $id;
 
     /**
      * @ORM\Column(type="string", length=32)
      * @var string
      */
-    private $name;
+    protected $name;
 
     /**
      * @ORM\Column(type="string", length=32)
      * @var string
      */
-    private $rank;
+    protected $rank;
 
     /**
      * @ORM\Column(type="integer", length=11)
      * @var int
      */
-    private $military_id;
+    protected $military_id;
 
     /**
      * @ORM\Column(type="datetime")
      * @var \DateTime
      */
-    private $created;
+    protected $created;
 }

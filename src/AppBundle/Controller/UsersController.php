@@ -2,6 +2,8 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\User;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -39,7 +41,27 @@ class UsersController extends Controller
      */
     public function getAction(Request $request)
     {
+        $userRepository = $this->get('doctrine.orm.entity_manager')
+            ->getRepository(User::class);
+        assert($userRepository instanceof EntityRepository);
 
+        $user = $userRepository->find($request->get('user_id'));
+
+        if (!$user) {
+            $jsonResponse = new JsonResponse();
+            $jsonResponse->setStatusCode(404);
+            return $jsonResponse;
+        }
+
+        $data = ['user' => $user];
+
+        $serializer = $this->container->get('jms_serializer');
+        $content = $serializer->serialize($data, 'json');
+
+        $jsonResponse = new JsonResponse();
+        $jsonResponse->setContent($content);
+
+        return $jsonResponse;
     }
 
     /**
