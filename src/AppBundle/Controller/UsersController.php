@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\User;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -10,6 +11,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Swagger\Annotations as SWG;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class UsersController extends Controller
 {
@@ -71,6 +73,13 @@ class UsersController extends Controller
      *   tags={"User"},
      *   consumes={"application/json"},
      *   produces={"application/json"},
+     *   @SWG\Parameter(
+     *     name="body",
+     *     in="body",
+     *     description="User",
+     *     required=true,
+     *     @SWG\Schema(ref="#/definitions/User"),
+     *   ),
      *   @SWG\Response(
      *     response="201",
      *     description="New user created"
@@ -85,7 +94,37 @@ class UsersController extends Controller
      */
     public function registerAction(Request $request)
     {
+        $body = $request->getContent();
+        $decodedBody = json_decode($body);
 
+        if (
+            !isset($decodedBody->name) ||
+            !isset($decodedBody->rank) ||
+            !isset($decodedBody->military_id)
+        ) {
+            throw new BadRequestHttpException('Invalid request');
+        }
+
+        $user = (new User())
+            ->setName($decodedBody->name)
+            ->setRank($decodedBody->rank)
+            ->setMilitaryId($decodedBody->military_id)
+            ->setCreated(new \DateTime());
+
+        /** @var EntityManager $entityManager */
+        $entityManager = $this->get('doctrine.orm.entity_manager');
+        $entityManager->persist($user);
+        $entityManager->flush();
+
+        $data = ['user' => $user];
+
+        $serializer = $this->container->get('jms_serializer');
+        $content = $serializer->serialize($data, 'json');
+
+        $jsonResponse = new JsonResponse();
+        $jsonResponse->setContent($content);
+
+        return $jsonResponse;
     }
 
     /**

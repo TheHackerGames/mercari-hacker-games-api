@@ -11,6 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 class User
 {
     /**
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      * @ORM\Column(type="integer", length=11)
      * @ORM\Id
      * @var int
@@ -40,4 +41,32 @@ class User
      * @var \DateTime
      */
     protected $created;
+
+    public function setName(string $name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function setRank(string $rank)
+    {
+        $this->rank = $rank;
+
+        return $this;
+    }
+
+    public function setMilitaryId(int $militaryId)
+    {
+        $this->military_id = $militaryId;
+
+        return $this;
+    }
+
+    public function setCreated(\DateTime $created)
+    {
+        $this->created = $created;
+
+        return $this;
+    }
 }
