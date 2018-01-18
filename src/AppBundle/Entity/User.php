@@ -42,6 +42,11 @@ class User
      */
     protected $created;
 
+    public function getId()
+    {
+        return $this->id;
+    }
+
     public function setName(string $name)
     {
         $this->name = $name;

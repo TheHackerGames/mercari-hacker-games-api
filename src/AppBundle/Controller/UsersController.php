@@ -2,7 +2,10 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Skill;
 use AppBundle\Entity\User;
+use AppBundle\Entity\UserSkill;
+use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,6 +15,7 @@ use Swagger\Annotations as SWG;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class UsersController extends Controller
 {
@@ -102,7 +106,7 @@ class UsersController extends Controller
             !isset($decodedBody->rank) ||
             !isset($decodedBody->military_id)
         ) {
-            throw new BadRequestHttpException('Invalid request');
+            throw new BadRequestHttpException('Parameters are missing');
         }
 
         $user = (new User())
@@ -114,7 +118,12 @@ class UsersController extends Controller
         /** @var EntityManager $entityManager */
         $entityManager = $this->get('doctrine.orm.entity_manager');
         $entityManager->persist($user);
-        $entityManager->flush();
+
+        try {
+            $entityManager->flush();
+        } catch (ForeignKeyConstraintViolationException $e) {
+            throw new BadRequestHttpException('Invalid military id');
+        }
 
         $data = ['user' => $user];
 
@@ -151,6 +160,44 @@ class UsersController extends Controller
      */
     public function getSkillsAction(Request $request)
     {
+        $entityManager = $this->get('doctrine.orm.entity_manager');
+        assert($entityManager instanceof EntityManager);
+
+        $userRepository = $entityManager
+            ->getRepository(User::class);
+        assert($userRepository instanceof EntityRepository);
+
+        $user = $userRepository->find($request->get('user_id'));
+
+        if (!$user) {
+            throw new NotFoundHttpException('User not found');
+        }
+
+        $userSkillRepository = $entityManager
+            ->getRepository(UserSkill::class);
+        assert($userSkillRepository instanceof EntityRepository);
+
+        $criteria = ['user_id' => $user->getId()];
+        $userSkills = $userSkillRepository->findBy($criteria);
+
+        $skillRepository = $entityManager
+            ->getRepository(Skill::class);
+        assert($skillRepository instanceof EntityRepository);
+
+        $criteria = ['id' => array_map(function (UserSkill $userSkill) {
+            return $userSkill->getSkillId();
+        }, $userSkills)];
+        $skills = $skillRepository->findBy($criteria);
+
+        $data = ['skills' => $skills];
+
+        $serializer = $this->container->get('jms_serializer');
+        $content = $serializer->serialize($data, 'json');
+
+        $jsonResponse = new JsonResponse();
+        $jsonResponse->setContent($content);
+
+        return $jsonResponse;
     }
 
     /**
