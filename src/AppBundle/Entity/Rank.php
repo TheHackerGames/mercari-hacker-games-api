@@ -5,10 +5,10 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="AppBundle\Repository\User")
- * @ORM\Table(name="users")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\Rank")
+ * @ORM\Table(name="ranks")
  */
-class User
+class Rank
 {
     /**
      * @ORM\GeneratedValue(strategy="IDENTITY")
@@ -19,16 +19,10 @@ class User
     protected $id;
 
     /**
-     * @ORM\Column(type="string", length=32)
+     * @ORM\Column(type="string", length=64)
      * @var string
      */
     protected $name;
-
-    /**
-     * @ORM\Column(type="integer", length=11)
-     * @var int
-     */
-    protected $rank_id;
 
     /**
      * @ORM\Column(type="integer", length=11)
@@ -42,9 +36,11 @@ class User
      */
     protected $created;
 
-    public function getId()
+    public function setId(int $id)
     {
-        return $this->id;
+        $this->id = $id;
+
+        return $this;
     }
 
     public function setName(string $name)
@@ -54,11 +50,9 @@ class User
         return $this;
     }
 
-    public function setRankId(int $rank_id)
+    public function getMilitaryId()
     {
-        $this->rank_id = $rank_id;
-
-        return $this;
+        return $this->military_id;
     }
 
     public function setMilitaryId(int $militaryId)

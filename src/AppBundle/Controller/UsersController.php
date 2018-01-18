@@ -101,7 +101,7 @@ class UsersController extends Controller
 
         if (
             !isset($decodedBody->name) ||
-            !isset($decodedBody->rank) ||
+            !isset($decodedBody->rank_id) ||
             !isset($decodedBody->military_id)
         ) {
             throw new BadRequestHttpException('Parameters are missing');
@@ -109,7 +109,7 @@ class UsersController extends Controller
 
         $user = (new User())
             ->setName($decodedBody->name)
-            ->setRank($decodedBody->rank)
+            ->setRankId($decodedBody->rank_id)
             ->setMilitaryId($decodedBody->military_id)
             ->setCreated(new \DateTime());
 
@@ -183,14 +183,14 @@ class UsersController extends Controller
 
         if (
             !isset($decodedBody->name) ||
-            !isset($decodedBody->rank) ||
+            !isset($decodedBody->rank_id) ||
             !isset($decodedBody->military_id)
         ) {
             throw new BadRequestHttpException('Parameters are missing');
         }
 
         $user->setName($decodedBody->name)
-            ->setRank($decodedBody->rank)
+            ->setRankId($decodedBody->rank_id)
             ->setMilitaryId($decodedBody->military_id);
 
         /** @var EntityManager $entityManager */

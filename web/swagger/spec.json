@@ -104,6 +104,51 @@
                 }
             }
         },
+        "/militaries/{military_id}/ranks": {
+            "get": {
+                "tags": [
+                    "Military"
+                ],
+                "summary": "List of military rank",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "military_id",
+                        "in": "path",
+                        "description": "military_id to fetch ranks for",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Number of rows to fetch",
+                        "required": false,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "Number of rows to skip",
+                        "required": false,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Rank created/matched"
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                }
+            }
+        },
         "/militaries/{military_id}/skills": {
             "get": {
                 "tags": [
@@ -183,6 +228,122 @@
                     },
                     "400": {
                         "description": "Invalid request"
+                    }
+                }
+            }
+        },
+        "/ranks": {
+            "post": {
+                "tags": [
+                    "Ranks"
+                ],
+                "summary": "Create a rank",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "description": "Rank",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Rank"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "New rank created"
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                }
+            }
+        },
+        "/ranks/{rank_id}/skills/{skill_id}": {
+            "post": {
+                "tags": [
+                    "Ranks"
+                ],
+                "summary": "Add skill to a rank",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "rank_id",
+                        "in": "path",
+                        "description": "rank_id to add the skill for",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "skill_id",
+                        "in": "path",
+                        "description": "skill_id to add to the rank",
+                        "required": true,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List returned"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                }
+            }
+        },
+        "/ranks/{rank_id}/skills": {
+            "get": {
+                "tags": [
+                    "Ranks"
+                ],
+                "summary": "List skills associated to rank",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "rank_id",
+                        "in": "path",
+                        "description": "rank_id to fetch skills for",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Number of results to fetch",
+                        "required": false,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "Number of results to skip",
+                        "required": false,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List returned"
+                    },
+                    "400": {
+                        "description": "Bad request"
                     }
                 }
             }
@@ -445,13 +606,23 @@
                 }
             }
         },
+        "Rank": {
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "military_id": {
+                    "type": "integer"
+                }
+            }
+        },
         "User": {
             "properties": {
                 "name": {
                     "type": "string"
                 },
-                "rank": {
-                    "type": "string"
+                "rank_id": {
+                    "type": "integer"
                 },
                 "military_id": {
                     "type": "integer"

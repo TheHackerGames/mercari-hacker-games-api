@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Rank;
 use DateTime;
 use AppBundle\Entity\Military;
 use AppBundle\Entity\MilitarySkill as MilitarySkillEntity;
@@ -46,6 +47,82 @@ class MilitariesController extends Controller
         $data = ['militaries' => $militaries];
 
         $serializer = $this->container->get('jms_serializer');
+        $content = $serializer->serialize($data, 'json');
+
+        $jsonResponse = new JsonResponse();
+        $jsonResponse->setContent($content);
+
+        return $jsonResponse;
+    }
+
+    /**
+     * @SWG\Get(
+     *   path="/militaries/{military_id}/ranks",
+     *   summary="List of military rank",
+     *   tags={"Military"},
+     *   consumes={"application/json"},
+     *   produces={"application/json"},
+     *   @SWG\Parameter(
+     *     description="military_id to fetch ranks for",
+     *     in="path",
+     *     name="military_id",
+     *     required=true,
+     *     type="integer"
+     *   ),
+     *   @SWG\Parameter(
+     *     name="limit",
+     *     in="query",
+     *     description="Number of rows to fetch",
+     *     required=false,
+     *     type="integer"
+     *   ),
+     *   @SWG\Parameter(
+     *     name="offset",
+     *     in="query",
+     *     description="Number of rows to skip",
+     *     required=false,
+     *     type="integer"
+     *   ),
+     *   @SWG\Response(
+     *     response="200",
+     *     description="Rank created/matched"
+     *   ),
+     *   @SWG\Response(
+     *     response="400",
+     *     description="Invalid request"
+     *   )
+     * )
+     * @Route("/militaries/{military_id}/ranks", name="get_military_ranks")
+     * @Method({"Get"})
+     */
+    public function getMilitaryRanksAction(Request $request)
+    {
+        $militaryId = $request->get('military_id');
+        $limit = $request->get('limit', 50);
+        $offset = $request->get('offset', 0);
+
+        $entityManager = $this->get('doctrine.orm.entity_manager');
+        $militaryRepository = $entityManager->getRepository(Military::class);
+        assert($entityManager instanceof EntityManager);
+        assert($militaryRepository instanceof EntityRepository);
+
+        $militaryEntity = $militaryRepository->find($militaryId);
+        if (!($militaryEntity instanceof Military)) {
+            throw new InvalidArgumentException('Military id is invalid');
+        }
+
+        $rankRepository = $entityManager
+            ->getRepository(Rank::class);
+        assert($rankRepository instanceof EntityRepository);
+
+        $criteria = ['military_id' => $militaryEntity->getId()];
+        $ranks = $rankRepository->findBy($criteria, null, $limit, $offset);
+
+        $serializer = $this->container->get('jms_serializer');
+
+        $data = [
+            'rnaks' => $ranks
+        ];
         $content = $serializer->serialize($data, 'json');
 
         $jsonResponse = new JsonResponse();

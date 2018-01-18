@@ -7,7 +7,7 @@ use Swagger\Annotations as SWG;
 /**
  * @SWG\Definition()
  */
-class User
+class Rank
 {
     /**
      * @SWG\Property()
@@ -18,12 +18,6 @@ class User
     /**
      * @SWG\Property()
      * @var int
-     */
-    public $rank_id;
-
-    /**
-     * @SWG\Property()
-     * @var integer
      */
     public $military_id;
 }
