@@ -42,6 +42,19 @@ class Skill
     }
 
     /**
+     * Set skill id
+     *
+     * @param int $id
+     * @return $this
+     */
+    public function setId(int $id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
      * Set skill name
      *
      * @param string $name
