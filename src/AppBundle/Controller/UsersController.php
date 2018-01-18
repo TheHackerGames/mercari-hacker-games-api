@@ -320,5 +320,49 @@ class UsersController extends Controller
      */
     public function deleteSkillAction(Request $request)
     {
+        $entityManager = $this->get('doctrine.orm.entity_manager');
+        assert($entityManager instanceof EntityManager);
+
+        $userRepository = $entityManager
+            ->getRepository(User::class);
+        assert($userRepository instanceof EntityRepository);
+
+        $user = $userRepository->find($request->get('user_id'));
+
+        if (!$user) {
+            throw new NotFoundHttpException('User not found');
+        }
+
+        $skillRepository = $entityManager
+            ->getRepository(Skill::class);
+        assert($skillRepository instanceof EntityRepository);
+
+        $skill = $skillRepository->find($request->get('skill_id'));
+
+        if (!$skill) {
+            throw new NotFoundHttpException('Skill not found');
+        }
+
+        $userSkillRepository = $entityManager
+            ->getRepository(UserSkill::class);
+        assert($userSkillRepository instanceof EntityRepository);
+
+        $criteria = ['user_id' => $user->getId(), 'skill_id' => $skill->getId()];
+        $userSkill = $userSkillRepository->findOneBy($criteria);
+
+        if ($userSkill instanceof UserSkill) {
+            $entityManager->remove($userSkill);
+            $entityManager->flush();
+        }
+
+        $data = ['skill' => $skill];
+
+        $serializer = $this->container->get('jms_serializer');
+        $content = $serializer->serialize($data, 'json');
+
+        $jsonResponse = new JsonResponse();
+        $jsonResponse->setContent($content);
+
+        return $jsonResponse;
     }
 }
