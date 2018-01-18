@@ -34,4 +34,25 @@ class UserSkill
     {
         return $this->skill_id;
     }
+
+    public function setUserId(int $userId)
+    {
+        $this->user_id = $userId;
+
+        return $this;
+    }
+
+    public function setSkillId(int $skillId)
+    {
+        $this->skill_id = $skillId;
+
+        return $this;
+    }
+
+    public function setCreated(\DateTime $created)
+    {
+        $this->created = $created;
+
+        return $this;
+    }
 }
