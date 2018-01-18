@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -11,6 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Skill
 {
     /**
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      * @ORM\Column(type="integer", length=11)
      * @ORM\Id
      * @var int
@@ -28,4 +30,40 @@ class Skill
      * @var \DateTime
      */
     private $created;
+
+    /**
+     * Get skill id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set skill name
+     *
+     * @param string $name
+     * @return $this
+     */
+    public function setName(string $name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * Set skill created date
+     *
+     * @param DateTime $created
+     * @return $this
+     */
+    public function setCreated(DateTime $created)
+    {
+        $this->created = $created;
+
+        return $this;
+    }
 }
