@@ -13,7 +13,7 @@ class MilitariesController extends Controller
 {
     /**
      * @SWG\Get(
-     *   path="/mili",
+     *   path="/militaries",
      *   summary="Get list of militaries",
      *   tags={"Military"},
      *   consumes={"application/json"},
@@ -23,7 +23,7 @@ class MilitariesController extends Controller
      *     description="List returned"
      *   )
      * )
-     * @Route("/mili", name="militaries")
+     * @Route("/militaries", name="militaries")
      * @Method({"GET"})
      */
     public function listAction(Request $request)

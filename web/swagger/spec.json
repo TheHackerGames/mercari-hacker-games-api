@@ -5,7 +5,40 @@
         "version": "1.0.0"
     },
     "paths": {
-        "/mili": {
+        "/jobs-search": {
+            "post": {
+                "tags": [
+                    "Jobs"
+                ],
+                "summary": "Get list of jobs",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "description": "JobSearch",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/JobSearch"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List returned"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                }
+            }
+        },
+        "/militaries": {
             "get": {
                 "tags": [
                     "Military"
@@ -192,7 +225,7 @@
                     }
                 ],
                 "responses": {
-                    "201": {
+                    "200": {
                         "description": "Skill deleted"
                     },
                     "400": {
@@ -202,5 +235,22 @@
             }
         }
     },
-    "definitions": {}
+    "definitions": {
+        "JobSearch": {
+            "properties": {
+                "skillIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "limit": {
+                    "type": "integer"
+                },
+                "offset": {
+                    "type": "integer"
+                }
+            }
+        }
+    }
 }
