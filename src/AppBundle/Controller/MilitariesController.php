@@ -121,7 +121,7 @@ class MilitariesController extends Controller
         $serializer = $this->container->get('jms_serializer');
 
         $data = [
-            'rnaks' => $ranks
+            'ranks' => $ranks
         ];
         $content = $serializer->serialize($data, 'json');
 
