@@ -18,3 +18,7 @@ You can see the live API swagger docs here:
 - http://178.79.129.186/doc
 
 It is deployed on a Linode.com base instance for demo purposes.
+
+## NLP
+
+We use 

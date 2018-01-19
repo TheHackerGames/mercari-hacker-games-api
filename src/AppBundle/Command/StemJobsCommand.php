@@ -10,13 +10,15 @@ class StemJobsCommand extends ContainerAwareCommand
 {
     protected function configure()
     {
-        $this
-            ->setName('stem:jobs')
+        $this->setName('stem:jobs')
             ->setDescription('Stems job title and descriptions into jobs_stems table');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $container = $this->getContainer();
+
+
         $output->writeln('Done!');
     }
 }
