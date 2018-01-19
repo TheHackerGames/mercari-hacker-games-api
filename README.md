@@ -11,11 +11,15 @@ This is a symfony3 REST API forked from my (@danb) CRUD API project here:
 - Symfony3
 - Composer
 - Docker / Docker Compose
+- NLP / Tokenization & Stemming
 
 ## Live
 
 You can see the live API swagger docs here:
 - http://178.79.129.186/doc
+
+You can see our API doc debugger area here to aid client engineers:
+- http://178.79.129.186/_profiler
 
 It is deployed on a Linode.com base instance for demo purposes.
 
