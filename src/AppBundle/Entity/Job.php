@@ -54,6 +54,11 @@ class Job
      */
     protected $created;
 
+    public function getId()
+    {
+        return $this->id;
+    }
+
     public function setId(int $id)
     {
         $this->id = $id;
