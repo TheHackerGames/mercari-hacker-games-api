@@ -53,8 +53,11 @@ class StemJobsCommand extends ContainerAwareCommand
             $title =$job->getTitle();
             $description = $job->getDescription();
 
-            $titleTokens = $tokenizer->tokenize($title);
-            $descriptionTokens = $tokenizer->tokenize($description);
+            $cleanTitle = str_replace(['/'], [' '], $title);
+            $cleanDescription = str_replace(['/'], [' '], $description);
+
+            $titleTokens = $tokenizer->tokenize($cleanTitle);
+            $descriptionTokens = $tokenizer->tokenize($cleanDescription);
 
             $allTokens = array_merge($titleTokens, $descriptionTokens);
             $tokensDoc = new TokensDocument($allTokens);
