@@ -11,11 +11,15 @@ This is a symfony3 REST API forked from my (@danb) CRUD API project here:
 - Symfony3
 - Composer
 - Docker / Docker Compose
+- NLP / Tokenization & Stemming
 
 ## Live
 
 You can see the live API swagger docs here:
 - http://178.79.129.186/doc
+
+You can see our API doc debugger area here to aid client engineers:
+- http://178.79.129.186/_profiler
 
 It is deployed on a Linode.com base instance for demo purposes.
 
@@ -33,9 +37,49 @@ The following libraries were leveraged:
 You can see our stem commands by running the console command in vanilla:
 
 ```
-BIN CONSOLE HERE
+BIN CONSOLE HERE OF STEM COMMANDS
 ```
 
-This had some mapping but not enough to solve the issue...
+Once stems are generated we can map stems to jobs using simple text look-ups:
 
-If time allowed, we would use thesaurus to expand stems and therfore increase matches.
+```
+$ bin/console job:skill:match
+...
+Connected the following skill and job...
+Job: Quality Operations Director
+Skill: leadership
+Connected the following skill and job...
+Job: Quality Operations Director
+Skill: message processing procedures
+Connected the following skill and job...
+Job: Quality Operations Director
+Skill: process analysis and improvement
+Connected the following skill and job...
+Job: Quality Operations Director
+Skill: project/program management
+Connected the following skill and job...
+Job: Quality Operations Director
+Skill: soft skills
+Connected the following skill and job...
+Job: Quality Operations Director
+Skill: music performance
+Connected the following skill and job...
+Job: Quality Operations Director
+Skill: endurance training
+Connected the following skill and job...
+Job: Learning and Development Coordinator
+Skill: firearm handling and maintenance
+Connected the following skill and job...
+Job: Learning and Development Coordinator
+Skill: schedule/itinerary planning
+Connected the following skill and job...
+Job: Learning and Development Coordinator
+Skill: surveying and mapping methods
+Connected the following skill and job...
+Job: Learning and Development Coordinator
+Skill: process analysis and improvement
+Connected the following skill and job...
+Job: Learning and Development Coordinator
+Skill: endurance training
+...
+```

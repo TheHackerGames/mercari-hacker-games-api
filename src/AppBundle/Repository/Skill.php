@@ -109,4 +109,42 @@ class Skill extends EntityRepository
 
         return $skills;
     }
+
+    /**
+     * @param array $stemTokens
+     * @return Skill[]
+     */
+    public function findByStemTokenMatch(array $stemTokens)
+    {
+        $entityManager = $this->getEntityManager();
+        $connection = $entityManager->getConnection();
+
+        $stemTokenString = "\"" . implode("\", \"", $stemTokens) . "\"";
+
+        $sql = "SELECT s.*
+        FROM skills s
+        INNER JOIN skills_stems ss ON ss.skill_id = s.id
+        INNER JOIN stems st ON st.id = ss.stem_id
+        WHERE st.stem IN ($stemTokenString)
+        GROUP BY s.id";
+
+        $results = $connection->fetchAll($sql);
+
+        $skills = [];
+        foreach ($results as $result) {
+            $created = DateTime::createFromFormat(
+                'Y-m-d H:i:s',
+                $result['created']
+            );
+
+            $skill = new SkillEntity();
+            $skill->setId($result['id'])
+                ->setName($result['name'])
+                ->setCreated($created);
+
+            $skills[] = $skill;
+        }
+
+        return $skills;
+    }
 }
