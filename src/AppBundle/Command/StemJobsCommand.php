@@ -3,6 +3,8 @@
 namespace AppBundle\Command;
 
 use AppBundle\Entity\Job;
+use AppBundle\Entity\JobStem;
+use AppBundle\Entity\Stem;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -21,16 +23,15 @@ class StemJobsCommand extends ContainerAwareCommand
     {
         $container = $this->getContainer();
 
-        $jobRepository = $container->get('doctrine.orm.entity_manager')
-                ->getRepository(Job::class);
+        $entityManager = $container->get('doctrine.orm.entity_manager');
+
+        $jobRepository = $entityManager->getRepository(Job::class);
         assert($jobRepository instanceof EntityRepository);
 
-        $stemRepository = $container->get('doctrine.orm.entity_manager')
-            ->getRepository(Stem::class);
+        $stemRepository = $entityManager->getRepository(Stem::class);
         assert($stemRepository instanceof EntityRepository);
 
-        $jobStemRepository = $container->get('doctrine.orm.entity_manager')
-            ->getRepository(JobStem::class);
+        $jobStemRepository = $entityManager->getRepository(JobStem::class);
         assert($jobStemRepository instanceof EntityRepository);
 
         $snowballStemmer = new SnowballStemmer();
@@ -38,6 +39,8 @@ class StemJobsCommand extends ContainerAwareCommand
         $jobs = $jobRepository->findAll();
         foreach ($jobs as $job) {
             assert($job instanceof Job);
+
+            $jobStemRepository->deleteByJobId($job->getId());
 
             $title =$job->getTitle();
             $description = $job->getDescription();
@@ -50,15 +53,32 @@ class StemJobsCommand extends ContainerAwareCommand
 
             $normalizeTokens = normalize_tokens($uniqueTokens);
 
+            $output->writeln($job->getTitle() . ' | ' . json_encode($normalizeTokens));
+
             foreach ($normalizeTokens as $token) {
 
-                $stemmedToken =
+                $stemmedToken = $snowballStemmer->stem($token);
 
-                $stem = $stemRepository->findOneBy(['stem' => ]);
+                $stem = $stemRepository->findOneBy(['stem' => $stemmedToken]);
+                if (!($stem instanceof Stem)) {
 
+                    $stem = new Stem();
+                    $stem->setStem($stemmedToken)
+                        ->setWord($token)
+                        ->setCreated(new \DateTime());
+
+                    $entityManager->persist($stem);
+                    $entityManager->flush();
+                }
+
+                $jobStem = new JobStem();
+                $jobStem->setJobId($job->getId())
+                    ->setStemId($stem->getId())
+                    ->setCreated(new \DateTime());
+
+                $entityManager->persist($jobStem);
+                $entityManager->flush();
             }
         }
-
-        $output->writeln('Done!');
     }
 }
