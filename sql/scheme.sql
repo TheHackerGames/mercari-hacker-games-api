@@ -44,6 +44,15 @@ CREATE TABLE IF NOT EXISTS `jobs` (
   FOREIGN KEY (`user_id`) REFERENCES users(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE IF NOT EXISTS `stems` (
+  `id`   INTEGER(11) unsigned NOT NULL AUTO_INCREMENT,
+  `stem` VARCHAR(64)          NOT NULL,
+  `word` VARCHAR(64)          NOT NULL,
+  `created` DATETIME          NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE (`stem`, `word`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE IF NOT EXISTS `militaries_skills` (
   `military_id` INTEGER(11) unsigned NOT NULL,
   `skill_id`    INTEGER(11) unsigned NOT NULL,
