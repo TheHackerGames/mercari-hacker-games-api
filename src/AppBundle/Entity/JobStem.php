@@ -16,25 +16,14 @@ class JobStem
      * @ORM\Id
      * @var int
      */
-    protected $id;
-
-    /**
-     * @ORM\Column(type="integer", length=11)
-     * @var int
-     */
     protected $job_id;
 
     /**
-     * @ORM\Column(type="string", length=64)
-     * @var string
-      */
-    protected $word;
-
-    /**
-     * @ORM\Column(type="string", length=64)
-     * @var string
+     * @ORM\Column(type="integer", length=11)
+     * @ORM\Id
+     * @var int
      */
-    protected $stem;
+    protected $stem_id;
 
     /**
      * @ORM\Column(type="datetime")
@@ -56,27 +45,14 @@ class JobStem
     }
 
     /**
-     * Set word
+     * Set stem id
      *
-     * @param string $word
+     * @param int $stemId
      * @return $this
      */
-    public function setWord(string $word)
+    public function setStemId(int $stemId)
     {
-        $this->word = $word;
-
-        return $this;
-    }
-
-    /**
-     * Set stem
-     *
-     * @param string $stem
-     * @return $this
-     */
-    public function setStem(string $stem)
-    {
-        $this->stem = $stem;
+        $this->stem_id = $stemId;
 
         return $this;
     }
