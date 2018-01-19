@@ -37,7 +37,13 @@ The following libraries were leveraged:
 You can see our stem commands by running the console command in vanilla:
 
 ```
-BIN CONSOLE HERE OF STEM COMMANDS
+# bin/console stem:skills
+Done!
+```
+```
+# bin/console stem:jobs
+Probation Officer | {"0":"probation","1":"officer","2":"misdemeanor","5":"southeast","6":"corrections",
+...
 ```
 
 Once stems are generated we can map stems to jobs using simple text look-ups:
