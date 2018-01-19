@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\JobStem")
- * @ORM\Table(name="jobs_stem")
+ * @ORM\Table(name="jobs_stems")
  */
 class JobStem
 {

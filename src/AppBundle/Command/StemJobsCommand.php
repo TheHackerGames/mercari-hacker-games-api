@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use TextAnalysis\Stemmers\SnowballStemmer;
+use TextAnalysis\Tokenizers\GeneralTokenizer;
 
 class StemJobsCommand extends ContainerAwareCommand
 {
@@ -34,7 +35,8 @@ class StemJobsCommand extends ContainerAwareCommand
         $jobStemRepository = $entityManager->getRepository(JobStem::class);
         assert($jobStemRepository instanceof EntityRepository);
 
-        $snowballStemmer = new SnowballStemmer();
+        $tokenizer = new GeneralTokenizer();
+        $stemmer = new SnowballStemmer();
 
         $jobs = $jobRepository->findAll();
         foreach ($jobs as $job) {
@@ -45,21 +47,24 @@ class StemJobsCommand extends ContainerAwareCommand
             $title =$job->getTitle();
             $description = $job->getDescription();
 
-            $titleTokens = tokenize($title);
-            $descriptionTokens = tokenize($description);
+            $titleTokens = $tokenizer->tokenize($title);
+            $descriptionTokens = $tokenizer->tokenize($description);
 
             $allTokens = array_merge($titleTokens, $descriptionTokens);
-            $uniqueTokens = array_unique($allTokens);
+            $normalizeTokens = array_map(function ($token) { return strtolower($token); }, $allTokens);
+            $uniqueTokens = array_unique($normalizeTokens);
 
-            $normalizeTokens = normalize_tokens($uniqueTokens);
+            $output->writeln($job->getTitle() . ' | ' . json_encode($uniqueTokens));
 
-            $output->writeln($job->getTitle() . ' | ' . json_encode($normalizeTokens));
+            foreach ($uniqueTokens as $token) {
 
-            foreach ($normalizeTokens as $token) {
+                $stemmedToken = $stemmer->stem($token);
 
-                $stemmedToken = $snowballStemmer->stem($token);
+                $stem = $stemRepository->findOneBy([
+                    'word' => $token,
+                    'stem' => $stemmedToken
+                ]);
 
-                $stem = $stemRepository->findOneBy(['stem' => $stemmedToken]);
                 if (!($stem instanceof Stem)) {
 
                     $stem = new Stem();

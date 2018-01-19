@@ -11,7 +11,7 @@ class JobStem extends EntityRepository
         $entityManager = $this->getEntityManager();
         $connection = $entityManager->getConnection();
 
-        $sql = "DELETE FROM jobs_stems WHERe job_id = ?";
+        $sql = "DELETE FROM jobs_stems WHERE job_id = ?";
 
         $params = [$jobId];
         $types = [ \PDO::PARAM_INT ];
