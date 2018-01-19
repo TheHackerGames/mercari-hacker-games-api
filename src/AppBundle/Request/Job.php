@@ -38,4 +38,12 @@ class Job
      * @var string
      */
     public $location;
+
+    /**
+     * @SWG\Property(
+     *     @SWG\Items(type="integer")
+     * )
+     * @var array
+     */
+    public $skillIds;
 }

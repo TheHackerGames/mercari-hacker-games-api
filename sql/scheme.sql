@@ -97,3 +97,12 @@ CREATE TABLE IF NOT EXISTS `skills_stems` (
   FOREIGN KEY (`skill_id`) REFERENCES skills(id),
   FOREIGN KEY (`stem_id`) REFERENCES stems(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `jobs_stems` (
+  `job_id`   INTEGER(11) unsigned NOT NULL,
+  `stem_id` INTEGER(11) unsigned NOT NULL,
+  `created`  DATETIME             NOT NULL,
+  PRIMARY KEY (`job_id`, `stem_id`),
+  FOREIGN KEY (`job_id`) REFERENCES jobs(id),
+  FOREIGN KEY (`stem_id`) REFERENCES stems(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

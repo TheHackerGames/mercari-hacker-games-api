@@ -34,4 +34,25 @@ class JobSkill
     {
         return $this->job_id;
     }
+
+    public function setJobId(int $jobId)
+    {
+        $this->job_id = $jobId;
+
+        return $this;
+    }
+
+    public function setSkillId(int $skillId)
+    {
+        $this->skill_id = $skillId;
+
+        return $this;
+    }
+
+    public function setCreated(\DateTime $created)
+    {
+        $this->created = $created;
+
+        return $this;
+    }
 }

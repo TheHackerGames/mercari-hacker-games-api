@@ -54,6 +54,11 @@ class Job
      */
     protected $created;
 
+    public function getId()
+    {
+        return $this->id;
+    }
+
     public function setId(int $id)
     {
         $this->id = $id;
@@ -68,11 +73,21 @@ class Job
         return $this;
     }
 
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
     public function setTitle(string $title)
     {
         $this->title = $title;
 
         return $this;
+    }
+
+    public function getDescription()
+    {
+        return $this->description;
     }
 
     public function setDescription(string $description)
