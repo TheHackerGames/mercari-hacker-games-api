@@ -88,3 +88,12 @@ CREATE TABLE IF NOT EXISTS `ranks_skills` (
   FOREIGN KEY (`rank_id`) REFERENCES ranks(id),
   FOREIGN KEY (`skill_id`) REFERENCES skills(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `skills_stems` (
+  `skill_id` INTEGER(11) unsigned NOT NULL,
+  `stem_id`  INTEGER(11) unsigned NOT NULL,
+  `created`  DATETIME             NOT NULL,
+  PRIMARY KEY (`skill_id`, `stem_id`),
+  FOREIGN KEY (`skill_id`) REFERENCES skills(id),
+  FOREIGN KEY (`stem_id`) REFERENCES stems(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
