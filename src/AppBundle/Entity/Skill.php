@@ -54,6 +54,11 @@ class Skill
         return $this;
     }
 
+    public function getName()
+    {
+        return $this->name;
+    }
+
     /**
      * Set skill name
      *
