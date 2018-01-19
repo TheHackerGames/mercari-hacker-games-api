@@ -49,6 +49,16 @@ class Stem
     }
 
     /**
+     * Get stem
+     *
+     * @return string
+     */
+    public function getStem()
+    {
+        return $this->stem;
+    }
+
+    /**
      * Set stem
      *
      * @param string $stem
