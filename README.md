@@ -37,8 +37,10 @@ The following libraries were leveraged:
 You can see our stem commands by running the console command in vanilla:
 
 ```
-# bin/console stem:skills
-Done!
+$ bin/console stem:skill
+advanced first aid | ["advanced","aid","sophisticated","innovative","modern","high","progressive","st","beginning","inaugural","initial","opening","assistance","assist","helping","care"]
+driving | ["driving","motoring","dynamic","impulsive","energetic","dynamical"]
+...
 ```
 ```
 # bin/console stem:jobs
@@ -87,5 +89,47 @@ Skill: process analysis and improvement
 Connected the following skill and job...
 Job: Learning and Development Coordinator
 Skill: endurance training
+...
+```
+
+## Thesaurus
+
+To extend upon basic tokenization and stemming we expanded incoming searched tokens with synonyms/thesaurus.
+
+This is integrated into the `skill:stem` command using the following API:
+- https://api.datamuse.com/words?ml=management
+
+```
+[
+   {
+      word:"managing",
+      score:39861,
+      tags:[
+         "syn",
+         "n"
+      ]
+   },
+   {
+      word:"direction",
+      score:27881,
+      tags:[
+         "syn",
+         "n"
+      ]
+   },
+   {
+      word:"managment",
+      score:23099,
+      tags:[
+         "n"
+      ]
+   },
+   {
+      word:"managers",
+      score:17912,
+      tags:[
+         "n"
+      ]
+   },
 ...
 ```

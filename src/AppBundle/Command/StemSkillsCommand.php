@@ -5,6 +5,7 @@ namespace AppBundle\Command;
 use AppBundle\Entity\Skill;
 use AppBundle\Entity\SkillStem;
 use AppBundle\Entity\Stem;
+use AppBundle\Helper\Thesuarus;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
@@ -44,6 +45,10 @@ class StemSkillsCommand extends ContainerAwareCommand
             ->getRepository(Stem::class);
         assert($stemRepository instanceof EntityRepository);
 
+        $tokenizer = new GeneralTokenizer();
+        $stemmer = new SnowballStemmer();
+        $thesaurus = new Thesuarus();
+
         $skills = $skillRepository->findAll();
         foreach ($skills as $skill) {
 
@@ -51,24 +56,35 @@ class StemSkillsCommand extends ContainerAwareCommand
 
             $cleanName = str_replace(['/'], [' '], $skill->getName());
 
-            $tokensDoc = new TokensDocument(
-                (new GeneralTokenizer())->tokenize($cleanName)
-            );
+            $tokens = $tokenizer->tokenize($cleanName);
+
+            $thesaurusTokens = [];
+            foreach ($tokens as $token) {
+                $thesaurusTokens = array_merge($thesaurusTokens, $thesaurus->getSimillarWords($token));
+            }
+
+            $uniqueThesaurusTokens = array_unique($thesaurusTokens);
+
+            $allTokens = array_merge($tokens, $uniqueThesaurusTokens);
+            $uniqueAllTokens = array_unique($allTokens);
+
             $stopWords = array_map('trim', file(__DIR__ . '/../Resources/stop_words.txt'));
 
-            $tokens = $tokensDoc
+            $tokensDoc = new TokensDocument($uniqueAllTokens);
+            $filteredTokens = $tokensDoc
                 ->applyTransformation(new LowerCaseFilter())
                 ->applyTransformation(new PossessiveNounFilter())
                 ->applyTransformation(new PunctuationFilter([]))
                 ->applyTransformation(new StopWordsFilter($stopWords))
                 ->applyTransformation(new NumbersFilter())
                 ->getDocumentData();
-            $uniqueTokens = array_unique($tokens);
+            $uniqueFilteredTokens = array_unique($filteredTokens);
 
-            foreach ($uniqueTokens as $token) {
-                $stem = (new SnowballStemmer())
-                    ->stem($token);
+            $output->writeln($skill->getName() . ' | ' . json_encode($uniqueFilteredTokens));
 
+            foreach ($uniqueFilteredTokens as $token) {
+
+                $stem = $stemmer->stem($token);
                 $stemEntity = $stemRepository->findOneBy([
                     'stem' => $stem,
                     'word' => $token
