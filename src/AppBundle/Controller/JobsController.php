@@ -152,6 +152,20 @@ class JobsController extends Controller
         $entityManager->persist($job);
         $entityManager->flush();
 
+        if ($decodedBody->skillIds) {
+            foreach ($decodedBody->skillIds as $skillId) {
+                $jobSkill = (new JobSkill())
+                    ->setJobId($job->getId())
+                    ->setSkillId($skillId)
+                    ->setCreated(new \DateTime());
+                try {
+                    $entityManager->persist($jobSkill);
+                    $entityManager->flush();
+                } catch (\PDOException $e) {
+                }
+            }
+        }
+
         $data = ['job' => $job];
 
         $serializer = $this->container->get('jms_serializer');
