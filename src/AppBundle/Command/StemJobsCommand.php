@@ -9,6 +9,12 @@ use Doctrine\ORM\EntityRepository;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use TextAnalysis\Documents\TokensDocument;
+use TextAnalysis\Filters\LowerCaseFilter;
+use TextAnalysis\Filters\NumbersFilter;
+use TextAnalysis\Filters\PossessiveNounFilter;
+use TextAnalysis\Filters\PunctuationFilter;
+use TextAnalysis\Filters\StopWordsFilter;
 use TextAnalysis\Stemmers\SnowballStemmer;
 use TextAnalysis\Tokenizers\GeneralTokenizer;
 
@@ -51,8 +57,17 @@ class StemJobsCommand extends ContainerAwareCommand
             $descriptionTokens = $tokenizer->tokenize($description);
 
             $allTokens = array_merge($titleTokens, $descriptionTokens);
-            $normalizeTokens = array_map(function ($token) { return strtolower($token); }, $allTokens);
-            $uniqueTokens = array_unique($normalizeTokens);
+            $tokensDoc = new TokensDocument($allTokens);
+            $stopWords = array_map('trim', file(__DIR__ . '/../Resources/stop_words.txt'));
+
+            $tokens = $tokensDoc
+                ->applyTransformation(new LowerCaseFilter())
+                ->applyTransformation(new PossessiveNounFilter())
+                ->applyTransformation(new PunctuationFilter([]))
+                ->applyTransformation(new StopWordsFilter($stopWords))
+                ->applyTransformation(new NumbersFilter())
+                ->getDocumentData();
+            $uniqueTokens = array_unique($tokens);
 
             $output->writeln($job->getTitle() . ' | ' . json_encode($uniqueTokens));
 

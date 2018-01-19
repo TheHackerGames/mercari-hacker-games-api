@@ -10,6 +10,13 @@ use Doctrine\ORM\EntityRepository;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use TextAnalysis\Documents\TokensDocument;
+use TextAnalysis\Filters\LowerCaseFilter;
+use TextAnalysis\Filters\NumbersFilter;
+use TextAnalysis\Filters\PossessiveNounFilter;
+use TextAnalysis\Filters\PunctuationFilter;
+use TextAnalysis\Filters\StopWordsFilter;
+use TextAnalysis\Generators\StopwordGenerator;
 use TextAnalysis\Stemmers\SnowballStemmer;
 use TextAnalysis\Tokenizers\GeneralTokenizer;
 
@@ -41,12 +48,22 @@ class StemSkillsCommand extends ContainerAwareCommand
         foreach ($skills as $skill) {
             $skillStemRepository->deleteBySkillId($skill->getId());
 
-            $tokens = array_unique((new GeneralTokenizer())->tokenize($skill->getName()));
-            array_walk($tokens, function (string $token) {
-                return mb_strtolower($token);
-            });
+            $tokensDoc = new TokensDocument(
+                (new GeneralTokenizer())
+                    ->tokenize($skill->getName())
+            );
+            $stopWords = array_map('trim', file(__DIR__ . '/../Resources/stop_words.txt'));
 
-            foreach ($tokens as $token) {
+            $tokens = $tokensDoc
+                ->applyTransformation(new LowerCaseFilter())
+                ->applyTransformation(new PossessiveNounFilter())
+                ->applyTransformation(new PunctuationFilter([]))
+                ->applyTransformation(new StopWordsFilter($stopWords))
+                ->applyTransformation(new NumbersFilter())
+                ->getDocumentData();
+            $uniqueTokens = array_unique($tokens);
+
+            foreach ($uniqueTokens as $token) {
                 $stem = (new SnowballStemmer())
                     ->stem($token);
 
