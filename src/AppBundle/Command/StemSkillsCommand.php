@@ -46,11 +46,13 @@ class StemSkillsCommand extends ContainerAwareCommand
 
         $skills = $skillRepository->findAll();
         foreach ($skills as $skill) {
+
             $skillStemRepository->deleteBySkillId($skill->getId());
 
+            $cleanName = str_replace(['/'], [' '], $skill->getName());
+
             $tokensDoc = new TokensDocument(
-                (new GeneralTokenizer())
-                    ->tokenize($skill->getName())
+                (new GeneralTokenizer())->tokenize($cleanName)
             );
             $stopWords = array_map('trim', file(__DIR__ . '/../Resources/stop_words.txt'));
 
